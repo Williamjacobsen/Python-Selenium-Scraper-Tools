@@ -27,7 +27,7 @@ class Scraper:
         self.keys = Keys
         Clear()
     
-    def ClickElement(self, xpath):
+    def Click(self, xpath: str) -> None:
         """
         Parameters:
             xpath (str): XPath to element
@@ -44,7 +44,7 @@ class Scraper:
             except Exception as e:
                 print(f"Error clicking element for XPath '{xpath}': {e}")
 
-    def LocateElement(self, xpath):
+    def GetText(self, xpath: str) -> str:
         """
         Parameters:
             xpath (str): XPath to element
@@ -52,16 +52,16 @@ class Scraper:
         Finds the first element matching the XPath and returns the extracted text.
         Returns an empty string if the element is not found or parsing fails.
         """
-        try:
-            elements = self.wait.until(EC.presence_of_all_elements_located((By.XPATH, xpath)))
-            html_content = elements[0].get_attribute('innerHTML')
-            soup = BeautifulSoup(html_content, features="lxml")
-            return soup.get_text()
-        except Exception as e:
-            print(f"Could not locate or parse element with XPath '{xpath}': {e}")
-            return ""
+        #try:
+        elements = self.wait.until(EC.presence_of_all_elements_located((By.XPATH, xpath)))
+        html_content = elements[0].get_attribute('innerHTML')
+        soup = BeautifulSoup(html_content, features="lxml")
+        return soup.get_text()
+        #except Exception as e:
+        #    print(f"Could not locate or parse element with XPath '{xpath}': {e}")
+        #    return ""
 
-    def Send_keysElement(self, xpath, *values):
+    def SendKeys(self, xpath: str, *values) -> None:
         """
         Parameters:
             xpath (str): XPath to element
@@ -75,7 +75,7 @@ class Scraper:
         except Exception as e:
             print(f"Failed to send keys to element with XPath '{xpath}'. Values: {values}. Error: {e}")
     
-    def OpenPage(self, url):
+    def OpenPage(self, url: str) -> None:
         """
         Parameters:
             url (str): URL to website
@@ -86,7 +86,7 @@ class Scraper:
         except Exception as e:
             print(f"Failed to open page '{url}': {e}")
 
-    def CountChildren(self, xpath):
+    def CountChildren(self, xpath: str) -> int:
         """
         Parameters:
             xpath (str): XPath to element
@@ -96,9 +96,38 @@ class Scraper:
             int: Number of direct children, or -1 if element not found or error occurs.
         """
         try:
-            parent = self.wait.until(EC.presence_of_element_located((By.XPATH, xpath)))
-            children = parent.find_elements(By.XPATH, './*')
-            return len(children)
+            return len(self.GetChildren(xpath))
         except Exception as e:
             print(f"Error counting direct children for element with XPath '{xpath}': {e}")
             return -1
+    
+    def GetAttribute(self, xpath: str, attribute: str) -> str:
+        """
+        Parameters:
+            xpath (str): XPath to element 
+            attribute (str): Name of the attribute to read (e.g. 'href', 'src')
+        
+        Returns:
+            The value of the requested attribute, or an empty string if not found.
+        """
+        try:
+            elem = self.wait.until(EC.presence_of_element_located((By.XPATH, xpath)))
+            return elem.get_attribute(attribute) or ""
+        except Exception as e:
+            print(f"Error getting attribute '{attribute}' from element {xpath}: {e}")
+            return ""
+
+    def GetChildren(self, xpath: str):
+        """
+        Parameters:
+            xpath (str): XPath to element 
+
+        Returns a list of elements for every direct child of the element located by xpath.
+        """
+        try:
+            parent = self.wait.until(EC.presence_of_element_located((By.XPATH, xpath)))
+            return parent.find_elements(By.XPATH, './*')
+        except Exception as e:
+            print(f"Error retrieving children for element with XPath '{xpath}': {e}")
+            return []
+
