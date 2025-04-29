@@ -12,6 +12,7 @@ def Clear():
         os.system('cls')
     else:
         os.system('clear')
+        # Hey
 
 class Scraper:
     """
