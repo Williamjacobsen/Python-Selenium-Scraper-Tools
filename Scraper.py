@@ -6,12 +6,14 @@ from selenium.webdriver.support import expected_conditions as EC
 from bs4 import BeautifulSoup
 import undetected_chromedriver as uc
 from selenium.webdriver.common.keys import Keys
+import pickle
 
 def Clear():
     if os.name == 'nt':
         os.system('cls')
     else:
         os.system('clear')
+        # Hey
 
 class Scraper:
     """
@@ -130,4 +132,11 @@ class Scraper:
         except Exception as e:
             print(f"Error retrieving children for element with XPath '{xpath}': {e}")
             return []
-
+        
+    def PlaceCookies(self):
+        pickle.dump(self.driver.get_cookies(), open("cookies.pkl", "wb"))
+    
+    def GetOldCookies(self):
+        cookies = pickle.load(open("cookies.pkl", "rb"))
+        for cookie in cookies:
+            self.driver.add_cookie(cookie)
