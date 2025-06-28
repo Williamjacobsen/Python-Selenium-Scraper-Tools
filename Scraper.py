@@ -13,7 +13,6 @@ def Clear():
         os.system('cls')
     else:
         os.system('clear')
-        # Hey
 
 class Scraper:
     """
@@ -24,7 +23,7 @@ class Scraper:
     def __init__(self):
         Clear()
         self.chrome_options = webdriver.ChromeOptions()
-        self.driver = uc.Chrome(options=self.chrome_options)
+        self.driver = uc.Chrome() #options=self.chrome_options
         self.wait = WebDriverWait(self.driver, 20)
         self.keys = Keys
         Clear()
@@ -133,10 +132,34 @@ class Scraper:
             print(f"Error retrieving children for element with XPath '{xpath}': {e}")
             return []
         
-    def PlaceCookies(self):
+    def SaveCookies(self):
         pickle.dump(self.driver.get_cookies(), open("cookies.pkl", "wb"))
     
-    def GetOldCookies(self):
-        cookies = pickle.load(open("cookies.pkl", "rb"))
-        for cookie in cookies:
-            self.driver.add_cookie(cookie)
+    def LoadCookies(self):
+        """
+        Loads cookies from a pickle file and adds valid ones to the browser session.
+        Filters out problematic attributes.
+        """
+        try:
+            cookies = pickle.load(open("cookies.pkl", "rb"))
+            for cookie in cookies:
+                # Remove attributes that may cause issues
+                cookie.pop('sameSite', None)
+                cookie.pop('secure', None)
+                cookie.pop('httpOnly', None)
+                cookie.pop('expiry', None)
+                try:
+                    self.driver.add_cookie(cookie)
+                except Exception as e:
+                    print(f"Skipping cookie: {cookie.get('name', '?')} - {e}")
+        except Exception as e:
+            print(f"Error loading cookies: {e}")
+
+    def RefreshPage(self) -> None:
+        """
+        Refreshes the current page in the browser.
+        """
+        try:
+            self.driver.refresh()
+        except Exception as e:
+            print(f"Failed to refresh the page: {e}")
