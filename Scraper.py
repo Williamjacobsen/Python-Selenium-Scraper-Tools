@@ -1,3 +1,4 @@
+from collections import deque
 import os
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -61,6 +62,24 @@ class Scraper:
         #except Exception as e:
         #    print(f"Could not locate or parse element with XPath '{xpath}': {e}")
         #    return ""
+
+    def GetTextFromElement(self, element) -> str:
+        """
+        Parameters:
+            element (WebElement): A Selenium WebElement.
+
+        Returns the extracted visible text from the given WebElement.
+        Returns an empty string if the element is None or parsing fails.
+        """
+        if element is None:
+            return ""
+        
+        try:
+            html_content = element.get_attribute('innerHTML')
+            soup = BeautifulSoup(html_content, features="lxml")
+            return soup.get_text()
+        except Exception:
+            return ""
 
     def SendKeys(self, xpath: str, *values) -> None:
         """
@@ -132,6 +151,75 @@ class Scraper:
             print(f"Error retrieving children for element with XPath '{xpath}': {e}")
             return []
         
+    def GetChildrenFromElement(self, element):
+        """
+        Parameters:
+            xpath (str): XPath to element 
+
+        Returns a list of elements for every direct child of the element located by xpath.
+        """
+        try:
+            if element is None:
+                return None
+            
+            return element.find_elements(By.XPATH, './*')
+        except Exception as e:
+            print(f"Error retrieving children for element '{element}': {e}")
+            return []
+    
+    def FindFirstTagFromElement(self, element, tag: str):
+        """
+        Breadth-first search for the first child element with the specified tag.
+
+        Parameters:
+            element (WebElement): The root element to search under.
+            tag (str): Tag name to search for.
+
+        Returns:
+            WebElement if found, None otherwise.
+        """
+        try:
+            if not hasattr(element, 'find_elements'):
+                raise TypeError(f"Expected WebElement, got {type(element).__name__}")
+
+            queue = deque([element])
+
+            while queue:
+                current = queue.popleft()
+                children = current.find_elements(By.XPATH, './*')
+
+                for child in children:                    
+                    if child.tag_name.lower() == tag.lower():
+                        return child
+                    queue.append(child)
+
+            return None
+        except Exception as e:
+            print(f"Error in BFS tag search from element for tag '{tag}': {e}")
+            return None
+    
+    def GetChildByIndex(self, parent, index: int):
+        """
+        Parameters:
+            parent (WebElement): The parent element to get the child from.
+            index (int): The zero-based index of the child.
+
+        Returns:
+            WebElement of the child at the given index, or None if out of bounds or error occurs.
+        """
+        try:
+            if parent is None:
+                return None
+            children = parent.find_elements(By.XPATH, './*')
+            if 0 <= index < len(children):
+                return children[index]
+            else:
+                print(f"Index {index} is out of range. Found {len(children)} children.")
+                return None
+        except Exception as e:
+            print(f"Error getting child at index {index}: {e}")
+            return None
+
     def SaveCookies(self):
         pickle.dump(self.driver.get_cookies(), open("cookies.pkl", "wb"))
     
