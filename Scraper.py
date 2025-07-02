@@ -22,12 +22,12 @@ class Scraper:
     Provides utility methods for navigating pages, interacting with elements, and extracting content.
     """
     def __init__(self):
-        Clear()
+        #Clear()
         self.chrome_options = webdriver.ChromeOptions()
         self.driver = uc.Chrome() #options=self.chrome_options
         self.wait = WebDriverWait(self.driver, 20)
         self.keys = Keys
-        Clear()
+        #Clear()
     
     def Click(self, xpath: str) -> None:
         """
