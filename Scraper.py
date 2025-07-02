@@ -198,6 +198,37 @@ class Scraper:
             print(f"Error in BFS tag search from element for tag '{tag}': {e}")
             return None
     
+    def GetElement(self, xpath: str):
+        """
+        Parameters:
+            xpath (str): XPath to the element.
+
+        Returns:
+            The first matching WebElement if found, or None otherwise.
+        """
+        try:
+            return self.wait.until(EC.presence_of_element_located((By.XPATH, xpath)))
+        except Exception as e:
+            print(f"Error locating element with XPath '{xpath}': {e}")
+            return None
+    
+    def GetOuterHTMLFromElement(self, element) -> str:
+        """
+        Parameters:
+            element (WebElement): A Selenium WebElement.
+
+        Returns:
+            A string containing the full HTML of the element, including its own tag and all child content.
+            Returns an empty string if the element is None or an error occurs.
+        """
+        try:
+            if not hasattr(element, 'get_attribute'):
+                raise TypeError(f"Expected WebElement, got {type(element).__name__}")
+            return element.get_attribute('outerHTML')
+        except Exception as e:
+            print(f"Error extracting outer HTML: {e}")
+            return ""
+    
     def GetChildByIndex(self, parent, index: int):
         """
         Parameters:
