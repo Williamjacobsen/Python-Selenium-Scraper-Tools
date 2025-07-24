@@ -71,7 +71,7 @@ scraper.RefreshPage()  # Required to apply cookies
 | `LoadCookies()`                         | Loads cookies from a saved file and injects them into the browser session.              |
 | `RefreshPage()`                         | Refreshes the currently loaded webpage.                                                 |
 
-## ❗ Notes
+## Notes
 
 - Designed for Chromium-based browsers using `undetected-chromedriver` to bypass bot detection.
 - Ensure you use the latest version of `undetected-chromedriver` for maximum compatibility.
