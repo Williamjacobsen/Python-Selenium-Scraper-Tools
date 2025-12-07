@@ -137,6 +137,23 @@ class Scraper:
             print(f"Error getting attribute '{attribute}' from element {xpath}: {e}")
             return ""
 
+    def GetAttributeFromElement(self, element, attribute: str) -> str:
+        """
+        Parameters:
+            element (WebElement): The Selenium WebElement to read from.
+            attribute (str): Name of the attribute to retrieve (e.g. 'href', 'src', 'data-id').
+
+        Returns:
+            str: The value of the requested attribute, or an empty string if not found or an error occurs.
+        """
+        try:
+            if element is None:
+                return ""
+            return element.get_attribute(attribute) or ""
+        except Exception as e:
+            print(f"Error getting attribute '{attribute}' from element: {e}")
+            return ""
+
     def GetChildren(self, xpath: str):
         """
         Parameters:

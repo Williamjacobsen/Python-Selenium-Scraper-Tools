@@ -15,7 +15,7 @@ A flexible, reusable web scraping class built with `Selenium`, `undetected-chrom
 ## Installation
 
 ```bash
-pip install selenium beautifulsoup4 lxml undetected-chromedriver
+pip install selenium beautifulsoup4 lxml undetected-chromedriver setuptools
 ```
 
 ## Quick Start
@@ -28,12 +28,11 @@ scraper.OpenPage("https://example.com")
 
 # Interact with elements
 scraper.Click("//button[@id='login']")
-scraper.SendKeys("//input[@name='username']", "myusername")
-scraper.SendKeys("//input[@name='password']", "mypassword", scraper.keys.RETURN)
+scraper.SendKeys("/html/body/div[3]/input", "myusername")
+scraper.SendKeys("/html/body/div[4]/input", "mypassword", scraper.keys.ENTER)
 
 # Extract data
-title = scraper.GetText("//h1")
-print("Page Title:", title)
+title = scraper.GetText("/html/body/div[1]/h4")
 
 # Save session
 scraper.SaveCookies()
@@ -52,24 +51,25 @@ scraper.RefreshPage()  # Required to apply cookies
 
 ## Class Methods Overview
 
-| Method                                  | Description                                                                             |
-| --------------------------------------- | --------------------------------------------------------------------------------------- |
-| `OpenPage(url)`                         | Navigates the browser to the specified URL.                                             |
-| `Click(xpath)`                          | Clicks on an element located by the given XPath.                                        |
-| `SendKeys(xpath, *values)`              | Sends text or special keys to an input element located by XPath.                        |
-| `GetText(xpath)`                        | Extracts and returns the visible text of the first element matching the XPath.          |
-| `GetTextFromElement(element)`           | Returns the visible text from a given WebElement.                                       |
-| `GetAttribute(xpath, attribute)`        | Gets the value of a specific attribute (e.g., `href`, `src`) from an element.           |
-| `GetElement(xpath)`                     | Returns the first matching WebElement for a given XPath.                                |
-| `GetChildren(xpath)`                    | Returns a list of direct child elements of an element located by XPath.                 |
-| `GetChildrenFromElement(element)`       | Returns a list of direct children from a given WebElement.                              |
-| `CountChildren(xpath)`                  | Returns the number of direct child elements for a given XPath.                          |
-| `FindFirstTagFromElement(element, tag)` | Performs a breadth-first search to find the first child element with the specified tag. |
-| `GetOuterHTMLFromElement(element)`      | Retrieves the full outer HTML (including the element tag itself) of a WebElement.       |
-| `GetChildByIndex(parent, index)`        | Gets a direct child element at the specified index from a parent WebElement.            |
-| `SaveCookies()`                         | Saves the current session's cookies to a `cookies.pkl` file.                            |
-| `LoadCookies()`                         | Loads cookies from a saved file and injects them into the browser session.              |
-| `RefreshPage()`                         | Refreshes the currently loaded webpage.                                                 |
+| Method                                        | Description                                                                             |
+| --------------------------------------------- | --------------------------------------------------------------------------------------- |
+| `OpenPage(url)`                               | Navigates the browser to the specified URL.                                             |
+| `Click(xpath)`                                | Clicks on an element located by the given XPath.                                        |
+| `SendKeys(xpath, *values)`                    | Sends text or special keys to an input element located by XPath.                        |
+| `GetText(xpath)`                              | Extracts and returns the visible text of the first element matching the XPath.          |
+| `GetTextFromElement(element)`                 | Returns the visible text from a given WebElement.                                       |
+| `GetAttribute(xpath, attribute)`              | Gets the value of a specific attribute (e.g., `href`, `src`) from xpath.                |
+| `GetAttributeFromElement(element, attribute)` | Gets the value of a specific attribute (e.g., `href`, `src`) from an element.           |
+| `GetElement(xpath)`                           | Returns the first matching WebElement for a given XPath.                                |
+| `GetChildren(xpath)`                          | Returns a list of direct child elements of an element located by XPath.                 |
+| `GetChildrenFromElement(element)`             | Returns a list of direct children from a given WebElement.                              |
+| `CountChildren(xpath)`                        | Returns the number of direct child elements for a given XPath.                          |
+| `FindFirstTagFromElement(element, tag)`       | Performs a breadth-first search to find the first child element with the specified tag. |
+| `GetOuterHTMLFromElement(element)`            | Retrieves the full outer HTML (including the element tag itself) of a WebElement.       |
+| `GetChildByIndex(parent, index)`              | Gets a direct child element at the specified index from a parent WebElement.            |
+| `SaveCookies()`                               | Saves the current session's cookies to a `cookies.pkl` file.                            |
+| `LoadCookies()`                               | Loads cookies from a saved file and injects them into the browser session.              |
+| `RefreshPage()`                               | Refreshes the currently loaded webpage.                                                 |
 
 ## Notes
 
