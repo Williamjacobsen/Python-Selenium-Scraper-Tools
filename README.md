@@ -21,7 +21,7 @@ pip install selenium beautifulsoup4 lxml undetected-chromedriver setuptools
 ## Quick Start
 
 ```python
-from scraper import Scraper
+from Scraper import Scraper
 
 scraper = Scraper()
 scraper.OpenPage("https://example.com")
